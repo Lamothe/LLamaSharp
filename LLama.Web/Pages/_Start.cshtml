@@ -1,0 +1,47 @@
+<div class="section-head">
+    <div class="bd-masthead mb-3 d-flex flex-row h-100 pb-5">
+        <div class="text-center">
+            <img src="~/image/llama-sharp.png" height="165" alt="LLamaSharp Web" class="d-none d-sm-block mx-auto m-5">
+            <h1 class="mb-3 fw-semibold lh-1">Welcome to LLamaSharp Web!</h1>
+            <p class="lead mb-4">
+                LLamaSharp Web is a web-based frontend for the LLamaSharp library, <strong>LLaMa for .NET!</strong>
+                LLamaSharp is a cross-platform library for running LLaMA/LLaVA models (and others) on your local device taking advantage of your CPU and GPU through llama.cpp.
+            </p>
+            <p class="text-body-secondary mb-0">
+                LLamaSharp on <strong>GitHub</strong>
+                <i class="bi bi-github"></i>
+                <span class="px-1">·</span>
+                <a href="https://github.com/SciSharp/LLamaSharp" class="link-secondary" target="_blank">Project</a>
+                <span class="px-1">·</span>
+                <a href="https://github.com/SciSharp/LLamaSharp/blob/master/README.md" class="link-secondary" target="_blank">README</a>
+            </p>
+        </div>
+    </div>
+
+    <div class="col-lg-7 mx-auto pb-3 mb-3 mb-md-5 text-center">
+        <h2 class="display-5 mb-3 fw-semibold lh-sm">Now, let's get started!</h2>
+        <p class="lead fw-normal">
+            To begin, you will need to obtain a Language Model.
+        </p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-6 py-lg-4 pe-lg-5">
+            <i class="bi bi-globe mb-2 fs-2 text-body-secondary"></i>
+            <h3 class="mb-3 fw-semibold lh-sm">Download a Model</h3>
+            <p class="lead fw-normal">
+                To begin, you will need to obtain a Model.  The most reliable source of language models are available from
+                <a href="https://huggingface.co/models" target="_blank">Hugging Face <i class="bi bi-box-arrow-up-right"></i></a>.
+            </p>
+        </div>
+        <div class="col-lg-6 py-lg-4 ps-lg-5 border-lg-start">
+            <i class="bi bi-chat mb-2 fs-2 text-body-secondary"></i>
+            <h3 class="fw-semibold">Using an existing model</h3>
+            <p class="pe-lg-5">
+                @{
+                    await Html.RenderPartialAsync("_SessionCreate");
+                }
+            </p>
+        </div>
+    </div>
+</div>
