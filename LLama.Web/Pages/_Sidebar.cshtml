@@ -1,0 +1,68 @@
+@model IndexModel
+
+<div id="sidebar" class="d-flex flex-column flex-shrink-0 p-3 offcanvas-start" tabindex="-1">
+    <div class="offcanvas-header">
+        <a asp-page="/Index" class="d-flex align-items-center mb-3 mb-md-0 me-3 text-decoration-none">
+            <img src="~/image/llama-sharp.png" class="sidebar-image me-2" />
+            <h5 class="offcanvas-title">LLamaSharp Web</h5>
+        </a>
+    </div>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item">
+            <a href="/" class="nav-link" aria-current="page">
+                <i class="bi bi-house me-2"></i>
+                Home
+            </a>
+        </li>
+        @foreach (var llamaModel in Model.Options.Models)
+        {
+            <li class="nav-item">
+                <a href="/" class="nav-link" aria-current="page">
+                    <i class="bi bi-chat me-2"></i>
+                    @llamaModel.Name
+                </a>
+            </li>
+
+        }
+    </ul>
+    <a class="nav-link" href="https://github.com/SciSharp/LLamaSharp" target="_blank">
+        <div class="d-flex flex-row align-items-center">
+            <i class="bi bi-github me-2" title="LLamaSharp on GitHub"></i>
+            LLamaSharp on GitHub
+        </div>
+    </a>
+    <hr>
+    <div class="dropdown">
+        <a id="ls-theme" class="d-flex align-items-center text-decoration-none dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+            Theme
+        </a>
+        <ul class="dropdown-menu">
+            <li>
+                <a href="#" class="dropdown-item" data-bs-theme-value="light">
+                    <i class="bi bi-brightness-high pe-2"></i>
+                    Light
+                </a>
+            </li>
+            <li>
+                <a href="#" class="dropdown-item d-flex" data-bs-theme-value="dark">
+                    <i class="bi bi-moon-stars pe-2"></i>
+                    Dark
+                </a>
+            </li>
+            <li>
+                <a href="#" class="dropdown-item d-flex" data-bs-theme-value="auto">
+                    <i class="bi bi-circle-half pe-2"></i>
+                    Auto
+                </a>
+            </li>
+        </ul>
+    </div>
+    <hr />
+    <a href="#" class="nav-link" role="button" data-bs-toggle="modal" data-bs-target="#sessionOptionsModal">
+        <div class="d-flex flex-row align-items-center">
+            <i class="bi bi-gear-fill me-2"></i>
+            Session Options
+        </div>
+    </a>
+</div>

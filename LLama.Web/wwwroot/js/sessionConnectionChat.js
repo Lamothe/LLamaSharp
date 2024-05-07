@@ -5,6 +5,7 @@ const createConnectionSessionChat = () => {
     const outputBotTemplate = $("#outputBotTemplate").html();
     const signatureTemplate = $("#signatureTemplate").html();
 
+    let modelName;
     let inferenceSession;
     const connection = new signalR.HubConnectionBuilder().withUrl("/SessionConnectionHub").build();
 
@@ -12,19 +13,24 @@ const createConnectionSessionChat = () => {
     const outputContainer = $("#output-container");
     const chatInput = $("#input");
 
+    const onLoaded = () => {
+        onInfo(`${modelName} loaded`);
+        loaderHide();
+        enableControls();
+        $(".session-parameters").remove();
+        $(".load").hide();
+        $(".unload").show();
+        $(".input-control-wrapper").show();
+    }
+
     const onStatus = (connection, status) => {
         if (status == Enums.SessionConnectionStatus.Disconnected) {
             onError("Socket not connected")
         }
         else if (status == Enums.SessionConnectionStatus.Connected) {
-            onInfo("Socket connected")
         }
         else if (status == Enums.SessionConnectionStatus.Loaded) {
-            loaderHide();
-            enableControls();
-            $("#load").hide();
-            $("#unload").show();
-            onInfo(`New model session successfully started`)
+            onLoaded();
         }
     }
 
@@ -40,6 +46,8 @@ const createConnectionSessionChat = () => {
     let responseContent;
     let responseContainer;
     let responseFirstToken;
+    var converter = new showdown.Converter();
+    var entireResponse = '';
 
     const onResponse = (response) => {
         if (!response)
@@ -47,7 +55,7 @@ const createConnectionSessionChat = () => {
 
         if (response.tokenType == Enums.TokenType.Begin) {
             let uniqueId = randomString();
-            outputContainer.append(Mustache.render(outputBotTemplate, { uniqueId: uniqueId, ...response }));
+            outputContainer.append(Mustache.render(outputBotTemplate, { uniqueId: uniqueId, modelName: modelName, ...response }));
             responseContainer = $(`#${uniqueId}`);
             responseContent = responseContainer.find(".content");
             responseFirstToken = true;
@@ -59,29 +67,35 @@ const createConnectionSessionChat = () => {
             enableControls();
             responseContainer.find(".signature").append(Mustache.render(signatureTemplate, response));
             scrollToBottom();
+            entireResponse = '';
         }
         else {
             if (responseFirstToken) {
                 responseContent.empty();
                 responseFirstToken = false;
                 responseContainer.find(".date").append(getDateTime());
-                responseContent.append(response.content.trim());
+                var newContent = response.content;
+                responseContent.append(newContent);
+                entireResponse += newContent;
             }
             else {
-                responseContent.append(response.content);
+                var newContent = response.content;
+                entireResponse += newContent;
+                var html = converter.makeHtml(entireResponse);
+                responseContent.html(html);
             }
             scrollToBottom();
         }
     }
 
     const sendPrompt = async () => {
-        const text = chatInput.val();
+        const text = chatInput.text();
         if (text) {
-            chatInput.val(null);
+            chatInput.text('');
             disableControls();
             outputContainer.append(Mustache.render(outputUserTemplate, { text: text, date: getDateTime() }));
             inferenceSession = await connection
-                .stream("SendPrompt", text, serializeFormToJson('SessionParameters'))
+                .stream("SendPrompt", text, serializeFormToJson())
                 .subscribe({
                     next: onResponse,
                     complete: onResponse,
@@ -97,11 +111,16 @@ const createConnectionSessionChat = () => {
     }
 
     const loadModel = async () => {
-        const sessionParams = serializeFormToJson('SessionParameters');
+        const sessionParams = serializeFormToJson();
+        if (modelName != sessionParams.Model) {
+            unloadModel();
+        }
         loaderShow();
         disableControls();
         disablePromptControls();
-        $("#load").attr("disabled", "disabled");
+        $(".load").attr("disabled", "disabled");
+
+        modelName = sessionParams.Model;
 
         // TODO: Split parameters sets
         await connection.invoke('LoadModel', sessionParams, sessionParams);
@@ -111,12 +130,12 @@ const createConnectionSessionChat = () => {
         await cancelPrompt();
         disableControls();
         enablePromptControls();
-        $("#load").removeAttr("disabled");
+        $(".load").removeAttr("disabled");
     }
 
-    const serializeFormToJson = (form) => {
+    const serializeFormToJson = () => {
         const formDataJson = {};
-        const formData = new FormData(document.getElementById(form));
+        const formData = new FormData(document.getElementsByClassName("session-parameters")[0]);
         formData.forEach((value, key) => {
 
             if (key.includes("."))
@@ -138,16 +157,17 @@ const createConnectionSessionChat = () => {
     }
 
     const enableControls = () => {
-        $(".input-control").removeAttr("disabled");
+        $("#input").removeAttr("disabled");
     }
 
     const disableControls = () => {
-        $(".input-control").attr("disabled", "disabled");
+        $("#input").attr("contenteditable", "");
     }
 
     const enablePromptControls = () => {
-        $("#load").show();
-        $("#unload").hide();
+        $(".load").show();
+        $(".unload").hide();
+        $(".input-control-wrapper").hide();
         $(".prompt-control").removeAttr("disabled");
         activatePromptTab();
     }
@@ -206,8 +226,8 @@ const createConnectionSessionChat = () => {
     }
 
     // Map UI functions
-    $("#load").on("click", loadModel);
-    $("#unload").on("click", unloadModel);
+    $(".load").on("click", loadModel);
+    $(".unload").on("click", unloadModel);
     $("#send").on("click", sendPrompt);
     $("#clear").on("click", clearOutput);
     $("#cancel").on("click", cancelPrompt);
@@ -223,10 +243,11 @@ const createConnectionSessionChat = () => {
         slider.next().text(slider.val());
     }).trigger("input");
 
-
     // Map signalr functions
     connection.on("OnStatus", onStatus);
     connection.on("OnError", onError);
     connection.on("OnResponse", onResponse);
     connection.start();
 }
+
+createConnectionSessionChat();

@@ -25,7 +25,7 @@
     setTheme(getPreferredTheme())
 
     const showActiveTheme = (theme) => {
-        const themeSwitcher = document.querySelector('#bd-theme')
+        const themeSwitcher = document.querySelector('#ls-theme')
 
         if (!themeSwitcher) {
             return

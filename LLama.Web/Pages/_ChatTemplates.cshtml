@@ -1,9 +1,20 @@
 <script id="outputErrorTemplate" type="text/html">
-    <div class="form-control text-danger">{{text}}</div>
+    <div class="text-bg-danger">{{text}}</div>
 </script>
 
 <script id="outputInfoTemplate" type="text/html">
-    <div class="form-control text-bg-success">{{text}}</div>
+    <div class="entry">
+        <div class="d-flex justify-content-between entry-header">
+            <div class="participant">
+                <span class="participant-icon">
+                    <i class="bi bi-person"></i>
+                </span>
+                <span class="participant-name">LLamaSharp</span>
+            </div>
+            <div class="entry-date">{{date}}</div>
+        </div>
+        <div class="content">{{text}}</div>
+    </div>
 </script>
 
 <script id="outputUserTemplate" type="text/html">
@@ -29,7 +40,7 @@
                     <span class="participant-icon">
                         <i class="bi bi-robot"></i>
                     </span>
-                    <span class="participant-name">Model</span>
+                    <span class="participant-name">{{modelName}}</span>
                 </div>
             </div>
             <div class="entry-date date"></div>
