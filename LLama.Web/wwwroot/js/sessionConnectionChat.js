@@ -1,11 +1,11 @@
-const createConnectionSessionChat = () => {
+const createConnectionSessionChat = (modelName) => {
     const outputErrorTemplate = $("#outputErrorTemplate").html();
     const outputInfoTemplate = $("#outputInfoTemplate").html();
     const outputUserTemplate = $("#outputUserTemplate").html();
     const outputBotTemplate = $("#outputBotTemplate").html();
+    const outputLLamaTemplate = $("#outputLLamaTemplate").html();
     const signatureTemplate = $("#signatureTemplate").html();
 
-    let modelName;
     let inferenceSession;
     const connection = new signalR.HubConnectionBuilder().withUrl("/SessionConnectionHub").build();
 
@@ -14,12 +14,9 @@ const createConnectionSessionChat = () => {
     const chatInput = $("#input");
 
     const onLoaded = () => {
-        onInfo(`${modelName} loaded`);
+        onLlama(`${modelName} loaded`);
         loaderHide();
         enableControls();
-        $(".session-parameters").remove();
-        $(".load").hide();
-        $(".unload").show();
         $(".input-control-wrapper").show();
     }
 
@@ -28,10 +25,17 @@ const createConnectionSessionChat = () => {
             onError("Socket not connected")
         }
         else if (status == Enums.SessionConnectionStatus.Connected) {
+            onLlama(`Loading ${modelName}`);
+            loadModel(modelName);
         }
         else if (status == Enums.SessionConnectionStatus.Loaded) {
             onLoaded();
         }
+    }
+
+    const onLlama = (error) => {
+        enableControls();
+        outputContainer.append(Mustache.render(outputLLamaTemplate, { text: error, date: getDateTime() }));
     }
 
     const onError = (error) => {
@@ -112,15 +116,12 @@ const createConnectionSessionChat = () => {
 
     const loadModel = async () => {
         const sessionParams = serializeFormToJson();
-        if (modelName != sessionParams.Model) {
-            unloadModel();
-        }
+        sessionParams.Model = modelName;
+
         loaderShow();
         disableControls();
         disablePromptControls();
         $(".load").attr("disabled", "disabled");
-
-        modelName = sessionParams.Model;
 
         // TODO: Split parameters sets
         await connection.invoke('LoadModel', sessionParams, sessionParams);
@@ -249,5 +250,3 @@ const createConnectionSessionChat = () => {
     connection.on("OnResponse", onResponse);
     connection.start();
 }
-
-createConnectionSessionChat();

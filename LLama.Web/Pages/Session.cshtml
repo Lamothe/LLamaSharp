@@ -1,0 +1,22 @@
+@page
+@model SessionModel
+
+<div id="scroll-container" class="d-flex flex-column section-content p-1 h-100">
+    <div class="mt-1">
+        <div id="output-container" class="d-flex flex-column gap-1 p-1">
+        </div>
+    </div>
+    <div class="mt-auto">
+        <span class="form-control input-control-wrapper">
+            <span id="input" class="flex-grow-1 auto-size" contenteditable>Write hello world in C# using top-level statements.</span>
+            <i class="bi bi-play" id="send" title="Send"></i>
+        </span>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/sessionConnectionChat.js"></script>
+    <script>
+        createConnectionSessionChat("@Model.ModelName");
+    </script>
+}

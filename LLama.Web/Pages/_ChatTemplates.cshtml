@@ -1,5 +1,5 @@
 <script id="outputErrorTemplate" type="text/html">
-    <div class="text-bg-danger">{{text}}</div>
+    <div class="text-bg-danger m-2 px-3 py-2">{{text}}</div>
 </script>
 
 <script id="outputInfoTemplate" type="text/html">
@@ -8,6 +8,21 @@
             <div class="participant">
                 <span class="participant-icon">
                     <i class="bi bi-person"></i>
+                </span>
+                <span class="participant-name">LLamaSharp</span>
+            </div>
+            <div class="entry-date">{{date}}</div>
+        </div>
+        <div class="content">{{text}}</div>
+    </div>
+</script>
+
+<script id="outputLLamaTemplate" type="text/html">
+    <div class="entry">
+        <div class="d-flex justify-content-between entry-header">
+            <div class="participant">
+                <span class="participant-icon">
+                    <img src="~/image/llama-sharp.png" height="25" alt="LLamaSharp Web">
                 </span>
                 <span class="participant-name">LLamaSharp</span>
             </div>
@@ -38,7 +53,7 @@
             <div class="d-flex justify-content-start">
                  <div class="participant">
                     <span class="participant-icon">
-                        <i class="bi bi-robot"></i>
+                        <i class="bi bi-diagram-3"></i>
                     </span>
                     <span class="participant-name">{{modelName}}</span>
                 </div>
