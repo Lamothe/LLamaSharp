@@ -1,4 +1,8 @@
-@model IndexModel
+@using LLama.Web.Common
+@using LLama.Web.Models
+@using Microsoft.Extensions.Options
+
+@inject IOptions<LLamaOptions> options
 
 <div id="sidebar" class="d-flex flex-column flex-shrink-0 p-3 offcanvas-start" tabindex="-1">
     <div class="offcanvas-header">
@@ -9,30 +13,23 @@
     </div>
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
-        <li class="nav-item">
-            <a href="/" class="nav-link" aria-current="page">
-                <i class="bi bi-house me-2"></i>
-                Home
-            </a>
-        </li>
-        @foreach (var llamaModel in Model.Options.Models)
+        @foreach (var llamaModel in options.Value.Models)
         {
             <li class="nav-item">
-                <a href="/" class="nav-link" aria-current="page">
-                    <i class="bi bi-chat me-2"></i>
+                <a asp-page="/Session" class="nav-link" asp-route-model="@(llamaModel.Name)">
+                    <i class="bi bi-diagram-3 me-2"></i>
                     @llamaModel.Name
                 </a>
             </li>
-
         }
+        <hr />
+        <a href="#" class="nav-link" role="button" data-bs-toggle="modal" data-bs-target="#sessionOptionsModal">
+            <div class="d-flex flex-row align-items-center">
+                <i class="bi bi-gear-fill me-2"></i>
+                Session Options
+            </div>
+        </a>
     </ul>
-    <a class="nav-link" href="https://github.com/SciSharp/LLamaSharp" target="_blank">
-        <div class="d-flex flex-row align-items-center">
-            <i class="bi bi-github me-2" title="LLamaSharp on GitHub"></i>
-            LLamaSharp on GitHub
-        </div>
-    </a>
-    <hr>
     <div class="dropdown">
         <a id="ls-theme" class="d-flex align-items-center text-decoration-none dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
             Theme
@@ -58,11 +55,16 @@
             </li>
         </ul>
     </div>
-    <hr />
-    <a href="#" class="nav-link" role="button" data-bs-toggle="modal" data-bs-target="#sessionOptionsModal">
+    <hr>
+    <a class="nav-link" href="https://github.com/SciSharp/LLamaSharp" target="_blank">
         <div class="d-flex flex-row align-items-center">
-            <i class="bi bi-gear-fill me-2"></i>
-            Session Options
+            <i class="bi bi-github me-2" title="LLamaSharp on GitHub"></i>
+            LLamaSharp on GitHub
         </div>
     </a>
 </div>
+
+@inject IOptions<LLamaOptions> options
+@{
+    await Html.RenderPartialAsync("_SessionOptionsModal", new IndexModel(options));
+}

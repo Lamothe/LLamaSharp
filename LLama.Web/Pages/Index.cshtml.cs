@@ -7,12 +7,21 @@ namespace LLama.Web.Pages;
 
 public class IndexModel : PageModel
 {
-    private readonly ILogger<IndexModel> _logger;
-
-    public IndexModel(ILogger<IndexModel> logger, IOptions<LLamaOptions> options)
+    public IndexModel(IOptions<LLamaOptions> options)
     {
-        _logger = logger;
         Options = options.Value;
+
+        SessionConfig = new SessionConfig
+        {
+            Prompt = "Below is an instruction that describes a task. Write a response that appropriately completes the request.",
+            AntiPrompt = "User:",
+            OutputFilter = "User:, Assistant:, A:, Response:"
+        };
+
+        InferenceOptions = new InferenceOptions
+        {
+            Temperature = 0.8f
+        };
     }
 
     public LLamaOptions Options { get; set; }
@@ -25,16 +34,5 @@ public class IndexModel : PageModel
 
     public void OnGet()
     {
-        SessionConfig = new SessionConfig
-        {
-            Prompt = "Below is an instruction that describes a task. Write a response that appropriately completes the request.",
-            AntiPrompt = "User:",
-            OutputFilter = "User:, Assistant:, A:, Response:"
-        };
-
-        InferenceOptions = new InferenceOptions
-        {
-            Temperature = 0.8f
-        };
     }
 }
