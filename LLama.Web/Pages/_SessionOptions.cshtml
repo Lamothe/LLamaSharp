@@ -1,29 +1,31 @@
 @using LLama.Web.Common
 @model IndexModel
 
-<div class="row">
-    <div class="col-md">
-        <div class="form-floating mb-2">
-            @Html.DropDownListFor(m => m.SessionConfig.ExecutorType, Html.GetEnumSelectList<LLamaExecutorType>(), new { @class = "form-select prompt-control", required = "required", autocomplete = "off" })
-            @Html.LabelFor(m => m.SessionConfig.ExecutorType)
-        </div>
-        <div class="form-floating mb-2">
-            @Html.TextAreaFor(m => Model.SessionConfig.Prompt, new { @class = "form-control prompt-control", rows = 8 })
-            @Html.LabelFor(m => m.SessionConfig.Prompt)
-        </div>
-        <div class="form-floating mb-2">
-            @Html.TextBoxFor(m => Model.SessionConfig.AntiPrompt, new { @type = "text", @class = "form-control prompt-control" })
-            @Html.LabelFor(m => m.SessionConfig.AntiPrompt)
-        </div>
+<form class="session-parameters">
+    <div class="row">
+        <div class="col-md">
+            <div class="form-floating mb-2">
+                @Html.DropDownListFor(m => m.SessionConfig.ExecutorType, Html.GetEnumSelectList<LLamaExecutorType>(), new { @class = "form-select prompt-control", required = "required", autocomplete = "off" })
+                @Html.LabelFor(m => m.SessionConfig.ExecutorType)
+            </div>
+            <div class="form-floating mb-2">
+                @Html.TextAreaFor(m => Model.SessionConfig.Prompt, new { @class = "form-control prompt-control", rows = 8 })
+                @Html.LabelFor(m => m.SessionConfig.Prompt)
+            </div>
+            <div class="form-floating mb-2">
+                @Html.TextBoxFor(m => Model.SessionConfig.AntiPrompt, new { @type = "text", @class = "form-control prompt-control" })
+                @Html.LabelFor(m => m.SessionConfig.AntiPrompt)
+            </div>
 
-        <div class="form-floating mb-2">
-            @Html.TextBoxFor(m => Model.SessionConfig.OutputFilter, new { @type = "text", @class = "form-control prompt-control" })
-            @Html.LabelFor(m => m.SessionConfig.OutputFilter)
+            <div class="form-floating mb-2">
+                @Html.TextBoxFor(m => Model.SessionConfig.OutputFilter, new { @type = "text", @class = "form-control prompt-control" })
+                @Html.LabelFor(m => m.SessionConfig.OutputFilter)
+            </div>
+        </div>
+        <div class="col-md">
+            @{
+                await Html.RenderPartialAsync("_InferenceParams", Model.InferenceOptions);
+            }
         </div>
     </div>
-    <div class="col-md">
-        @{
-            await Html.RenderPartialAsync("_InferenceParams", Model.InferenceOptions);
-        }
-    </div>
-</div>
+</form>

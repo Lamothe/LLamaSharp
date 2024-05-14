@@ -17,7 +17,6 @@ builder.Services.AddSignalR();
 builder.Logging.ClearProviders();
 builder.Services.AddLogging((loggingBuilder) => loggingBuilder.SetMinimumLevel(LogLevel.Trace).AddConsole());
 
-// Load InteractiveOptions
 builder.Services.AddOptions<LLamaOptions>()
     .BindConfiguration(nameof(LLamaOptions));
 
